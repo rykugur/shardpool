@@ -16,7 +16,8 @@
     in
     {
       boot.initrd.systemd = {
-        enable = true;
+        # `enable` was removed from nixpkgs when scripted initrd went away;
+        # systemd initrd is now unconditional. Setting it is a hard error.
         storePaths = [ pkgs.btrfs-progs ];
         services.rollback-root = {
           unitConfig.DefaultDependencies = false;
