@@ -5,4 +5,9 @@
 # so callers that only have a dotfiles input keep working.
 {
   flake.lib.dustySshKeys = import ./_dusty-ssh-keys.nix;
+
+  # The editor snippet directory moved here with the Helix chain, but dotfiles'
+  # zed-editor module wants it too and is staying put. Expose it rather than
+  # leaving a second copy behind or letting a relative path reach across repos.
+  flake.lib.editorSnippets = ../configs/snippets;
 }

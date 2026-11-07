@@ -438,7 +438,7 @@
 
       home.file = {
         ".config/helix/snippets" = {
-          source = ../../configs/snippets;
+          source = self.lib.editorSnippets;
           recursive = true;
         };
       };
