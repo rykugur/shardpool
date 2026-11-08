@@ -119,7 +119,9 @@
             }
             // lib.optionalAttrs (cfg.deployKeyPath != null) {
               auth.ssh_deploy_key_path = cfg.deployKeyPath;
-              auth.ssh_known_hosts_path = cfg.knownHostsPath;
+              # Upstream types this as a plain string, so a store path coming
+              # from `writeText` has to be coerced.
+              auth.ssh_known_hosts_path = toString cfg.knownHostsPath;
             }
           )
         ];
