@@ -122,6 +122,14 @@
               # Upstream types this as a plain string, so a store path coming
               # from `writeText` has to be coerced.
               auth.ssh_known_hosts_path = toString cfg.knownHostsPath;
+              # comin passes `auth.username` straight to
+              # `ssh.NewPublicKeysFromFile` (internal/repository/git.go:95), so
+              # it is the SSH *login user*, not a label. Its default, "comin",
+              # gets `Permission denied (publickey)` from GitHub and Forgejo,
+              # both of which require `git`. Upstream's option description
+              # ("any non empty username is valid") holds for HTTP token auth
+              # only; their own tests use "git".
+              auth.username = "git";
             }
           )
         ];
