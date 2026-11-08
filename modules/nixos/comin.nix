@@ -43,6 +43,18 @@
         '';
       };
 
+      options.ryk.comin.knownHostsPath = lib.mkOption {
+        type = with lib.types; nullOr path;
+        default = null;
+        description = ''
+          `known_hosts` file used to verify the Git server's SSH host key.
+          Required alongside `deployKeyPath`: comin verifies the host key and
+          has no trust-on-first-use fallback, so an SSH remote without this
+          fails every poll with
+          `ssh: handshake failed: knownhosts: key is unknown`.
+        '';
+      };
+
       options.ryk.comin.manualHosts = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [
@@ -80,6 +92,15 @@
             use the `git@host:owner/repo.git` form.
           '';
         }
+        {
+          assertion = cfg.deployKeyPath == null || cfg.knownHostsPath != null;
+          message = ''
+            ${config.networking.hostName} sets `ryk.comin.deployKeyPath` without
+            `ryk.comin.knownHostsPath`. comin verifies the Git server's SSH host
+            key and has no trust-on-first-use fallback, so every poll would fail
+            with `ssh: handshake failed: knownhosts: key is unknown`.
+          '';
+        }
       ];
 
       config.services.comin = {
@@ -98,6 +119,7 @@
             }
             // lib.optionalAttrs (cfg.deployKeyPath != null) {
               auth.ssh_deploy_key_path = cfg.deployKeyPath;
+              auth.ssh_known_hosts_path = cfg.knownHostsPath;
             }
           )
         ];
