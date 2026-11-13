@@ -55,6 +55,17 @@
         '';
       };
 
+      options.ryk.comin.pollPeriod = lib.mkOption {
+        type = lib.types.int;
+        default = 60;
+        description = ''
+          Seconds between polls of the remote. Raise it on hosts that should
+          converge after their peers: a fleet that shares a repository and a
+          binary cache wants one host to build first and the rest to
+          substitute, not three simultaneous builds of the same closure.
+        '';
+      };
+
       options.ryk.comin.manualHosts = lib.mkOption {
         type = lib.types.listOf lib.types.str;
         default = [
@@ -115,7 +126,7 @@
               # branch named "main". The per-host testing branch keeps comin's
               # default name, `testing-<hostname>`, and runs as `test`.
               branches.main.name = cfg.branch;
-              poller.period = 60;
+              poller.period = cfg.pollPeriod;
             }
             // lib.optionalAttrs (cfg.deployKeyPath != null) {
               auth.ssh_deploy_key_path = cfg.deployKeyPath;
